@@ -1,20 +1,25 @@
 ---
 name: conta-azul-skill
 description: >-
-  Integração com a API Financeira (v1) da Conta Azul (ERP brasileiro). Use ao
-  criar ou consultar contas a pagar e a receber, parcelas, eventos financeiros,
-  centros de custo, categorias, categorias DRE, contas financeiras, saldos
-  (atual e inicial) e transferências entre contas — ou ao lidar com a
-  autenticação OAuth 2.0 (Authorization Code) da Conta Azul, incluindo troca de
-  código por token e renovação de access_token via refresh_token.
+  Integração com as APIs da Conta Azul (ERP brasileiro): Financeiro (v1) e
+  Contratos/vendas recorrentes (v1). Use ao criar ou consultar contas a pagar e
+  a receber, parcelas, eventos financeiros, centros de custo, categorias,
+  categorias DRE, contas financeiras, saldos (atual e inicial) e transferências;
+  ao gerenciar contratos de recorrência (listar, criar, detalhar, encerrar,
+  remover); ou ao lidar com a autenticação OAuth 2.0 (Authorization Code) da
+  Conta Azul, incluindo troca de código por token e renovação de access_token
+  via refresh_token.
 ---
 
-# Conta Azul — API Financeira (v1)
+# Conta Azul — APIs Financeira e de Contratos (v1)
 
-Skill para integrar com a **API de Financeiro** da Conta Azul. Cobre o fluxo de
-autenticação OAuth 2.0 e os recursos financeiros: eventos (contas a pagar/a
-receber), parcelas, centros de custo, categorias, categorias DRE, contas
-financeiras, saldos e transferências.
+Skill para integrar com a Conta Azul. Cobre o fluxo de autenticação OAuth 2.0 e
+duas APIs (mesmo host e mesma autenticação):
+
+- **Financeiro**: eventos (contas a pagar/a receber), parcelas, centros de
+  custo, categorias, categorias DRE, contas financeiras, saldos e transferências.
+- **Contratos** (vendas agendadas/recorrência): listar, criar, detalhar,
+  encerrar e remover contratos — ver [references/contratos.md](references/contratos.md).
 
 ## URLs base
 
@@ -67,6 +72,17 @@ Base: `https://api-v2.contaazul.com`
 | Atualizar parcela (parcial) | `PATCH /v1/financeiro/eventos-financeiros/parcelas/{id}` |
 | Eventos alterados num período | `GET /v1/financeiro/eventos-financeiros/alteracoes` |
 | Status de protocolo (confirma criação) | `GET /v1/protocolo/{id}` *(API de Protocolos)* |
+
+### Contratos (vendas recorrentes) — ver [references/contratos.md](references/contratos.md)
+
+| Recurso | Método e caminho |
+| --- | --- |
+| Listar contratos | `GET /v1/contratos` |
+| Criar contrato | `POST /v1/contratos` |
+| Próximo número de contrato | `GET /v1/contratos/proximo-numero` |
+| Detalhar contrato | `GET /v1/contratos/{id}` |
+| Encerrar contrato | `POST /v1/contratos/{id}/encerrar` |
+| Remover contrato | `DELETE /v1/contratos/{id}` |
 
 Parâmetros de query (paginação, filtros, enums) e detalhes de cada endpoint em
 [references/endpoints.md](references/endpoints.md). Schemas dos corpos de

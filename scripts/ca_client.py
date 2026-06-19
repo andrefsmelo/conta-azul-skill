@@ -302,6 +302,9 @@ class ContaAzulClient:
     def patch(self, path, body, query=None):
         return self.request("PATCH", path, query=query, body=body)
 
+    def delete(self, path, query=None):
+        return self.request("DELETE", path, query=query)
+
 
 def _parse_query(items):
     q = {}
@@ -327,7 +330,7 @@ def main(argv=None):
 
     sub.add_parser("refresh", help="renovar access_token")
 
-    for name in ("get", "post", "patch"):
+    for name in ("get", "post", "patch", "delete"):
         sp = sub.add_parser(name, help=f"{name.upper()} em um caminho da API")
         sp.add_argument("path")
         sp.add_argument("--query", nargs="*", help="pares chave=valor")
@@ -348,6 +351,8 @@ def main(argv=None):
         query = _parse_query(getattr(args, "query", None))
         if args.cmd == "get":
             out = cli.get(args.path, query=query)
+        elif args.cmd == "delete":
+            out = cli.delete(args.path, query=query)
         else:
             body = json.loads(args.body)
             fn = cli.post if args.cmd == "post" else cli.patch
