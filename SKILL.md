@@ -28,6 +28,8 @@ duas APIs (mesmo host e mesma autenticação):
   vínculo a MDF-e — ver [references/notas-fiscais.md](references/notas-fiscais.md).
 - **Serviços**: catálogo de serviços (criar, consultar, atualizar, excluir em
   lote) — ver [references/servicos.md](references/servicos.md).
+- **Vendas**: vendas/orçamentos (criar, consultar, editar, itens, PDF,
+  vendedores, exclusão em lote) — ver [references/vendas.md](references/vendas.md).
 
 ## URLs base
 
@@ -132,6 +134,18 @@ Base: `https://api-v2.contaazul.com`
 | Detalhar serviço | `GET /v1/servicos/{id}` |
 | Atualizar (parcial) | `PATCH /v1/servicos/{id}` |
 | Excluir em lote (com corpo) | `DELETE /v1/servicos` |
+
+### Vendas — ver [references/vendas.md](references/vendas.md)
+
+| Recurso | Método e caminho |
+| --- | --- |
+| Listar/filtrar vendas | `GET /v1/venda/busca` |
+| Criar venda | `POST /v1/venda` |
+| Detalhar / editar venda | `GET` / `PUT /v1/venda/{id}` |
+| Itens da venda | `GET /v1/venda/{id}/itens` |
+| PDF da venda | `GET /v1/venda/{id}/imprimir` |
+| Próximo número / vendedores | `GET /v1/venda/proximo-numero` · `GET /v1/venda/vendedores` |
+| Excluir em lote | `POST /v1/venda/exclusao-lote` |
 
 Parâmetros de query (paginação, filtros, enums) e detalhes de cada endpoint em
 [references/endpoints.md](references/endpoints.md). Schemas dos corpos de
