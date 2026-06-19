@@ -299,6 +299,9 @@ class ContaAzulClient:
     def post(self, path, body, query=None):
         return self.request("POST", path, query=query, body=body)
 
+    def put(self, path, body, query=None):
+        return self.request("PUT", path, query=query, body=body)
+
     def patch(self, path, body, query=None):
         return self.request("PATCH", path, query=query, body=body)
 
@@ -330,11 +333,11 @@ def main(argv=None):
 
     sub.add_parser("refresh", help="renovar access_token")
 
-    for name in ("get", "post", "patch", "delete"):
+    for name in ("get", "post", "put", "patch", "delete"):
         sp = sub.add_parser(name, help=f"{name.upper()} em um caminho da API")
         sp.add_argument("path")
         sp.add_argument("--query", nargs="*", help="pares chave=valor")
-        if name in ("post", "patch"):
+        if name in ("post", "put", "patch"):
             sp.add_argument("--body", required=True, help="JSON do corpo")
 
     args = p.parse_args(argv)
@@ -355,7 +358,7 @@ def main(argv=None):
             out = cli.delete(args.path, query=query)
         else:
             body = json.loads(args.body)
-            fn = cli.post if args.cmd == "post" else cli.patch
+            fn = {"post": cli.post, "put": cli.put, "patch": cli.patch}[args.cmd]
             out = fn(args.path, body=body, query=query)
 
     if args.cmd in ("exchange", "refresh"):

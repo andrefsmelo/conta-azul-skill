@@ -20,6 +20,8 @@ duas APIs (mesmo host e mesma autenticação):
   custo, categorias, categorias DRE, contas financeiras, saldos e transferências.
 - **Contratos** (vendas agendadas/recorrência): listar, criar, detalhar,
   encerrar e remover contratos — ver [references/contratos.md](references/contratos.md).
+- **Pessoas**: clientes, fornecedores e transportadoras (criar, consultar,
+  atualizar, ativar/inativar/excluir em lote) — ver [references/pessoas.md](references/pessoas.md).
 
 ## URLs base
 
@@ -83,6 +85,17 @@ Base: `https://api-v2.contaazul.com`
 | Detalhar contrato | `GET /v1/contratos/{id}` |
 | Encerrar contrato | `POST /v1/contratos/{id}/encerrar` |
 | Remover contrato | `DELETE /v1/contratos/{id}` |
+
+### Pessoas (clientes/fornecedores/transportadoras) — ver [references/pessoas.md](references/pessoas.md)
+
+| Recurso | Método e caminho |
+| --- | --- |
+| Listar/filtrar pessoas | `GET /v1/pessoas` |
+| Criar pessoa | `POST /v1/pessoas` |
+| Detalhar pessoa | `GET /v1/pessoas/{id}` |
+| Atualizar (completo / parcial) | `PUT` / `PATCH /v1/pessoas/{id}` |
+| Empresa conectada ao token | `GET /v1/pessoas/conta-conectada` |
+| Ativar / inativar / excluir em lote | `POST /v1/pessoas/{ativar\|inativar\|excluir}` |
 
 Parâmetros de query (paginação, filtros, enums) e detalhes de cada endpoint em
 [references/endpoints.md](references/endpoints.md). Schemas dos corpos de
