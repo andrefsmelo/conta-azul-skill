@@ -24,6 +24,8 @@ duas APIs (mesmo host e mesma autenticação):
   atualizar, ativar/inativar/excluir em lote) — ver [references/pessoas.md](references/pessoas.md).
 - **Produtos** (estoque): catálogo de produtos, estoque, fiscal, kits/variações
   e tabelas auxiliares (NCM, CEST, unidades) — ver [references/produtos.md](references/produtos.md).
+- **Notas fiscais** (consulta): NF-e e NFS-e por filtro, detalhe por chave e
+  vínculo a MDF-e — ver [references/notas-fiscais.md](references/notas-fiscais.md).
 
 ## URLs base
 
@@ -109,6 +111,15 @@ Base: `https://api-v2.contaazul.com`
 | Atualizar (parcial) | `PATCH /v1/produtos/{id}` |
 | Remover produto | `DELETE /v1/produtos/{id}` |
 | Tabelas auxiliares | `GET /v1/produtos/{categorias\|ncm\|cest\|unidades-medida\|ecommerce-categorias\|ecommerce-marcas}` |
+
+### Notas fiscais (consulta) — ver [references/notas-fiscais.md](references/notas-fiscais.md)
+
+| Recurso | Método e caminho |
+| --- | --- |
+| Listar NF-e (produto) | `GET /v1/notas-fiscais` |
+| Listar NFS-e (serviço) | `GET /v1/notas-fiscais-servico` |
+| Detalhar por chave | `GET /v1/notas-fiscais/{chave}` |
+| Vincular notas a MDF-e | `POST /v1/notas-fiscais/vinculo-mdfe` |
 
 Parâmetros de query (paginação, filtros, enums) e detalhes de cada endpoint em
 [references/endpoints.md](references/endpoints.md). Schemas dos corpos de
