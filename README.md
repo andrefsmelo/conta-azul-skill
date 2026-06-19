@@ -1,8 +1,11 @@
-# Conta Azul — Financial API Skill
+# Conta Azul — API Skill
 
-Claude Agent Skill for the [Conta Azul Financial API (v1)](https://developers.contaazul.com/docs/financial-apis-openapi/v1):
-accounts payable and receivable, installments, cost centers, categories,
-financial accounts, balances and transfers — including the OAuth 2.0
+Claude Agent Skill for the [Conta Azul](https://developers.contaazul.com) APIs
+(v1) — all on the same host (`api-v2.contaazul.com`) and OAuth 2.0 auth. Covers
+**9 APIs**: Financial (payables/receivables, installments, cost centers,
+categories, accounts, balances, transfers), People (customers/suppliers),
+Products (inventory), Sales, Proposals, Contracts (recurring), Services,
+Invoices (NF-e/NFS-e) and Protocols (async status) — including the OAuth 2.0
 authentication flow.
 
 ## Layout

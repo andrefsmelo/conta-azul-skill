@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Cliente mínimo para a API Financeira (v1) da Conta Azul.
+"""Cliente mínimo para as APIs (v1) da Conta Azul.
 
-Usa apenas a biblioteca padrão. Cuida do Basic auth na renovação do token, da
-troca de código por token e das chamadas autenticadas à API.
+Genérico: autentica via OAuth 2.0 e chama qualquer endpoint de
+`api-v2.contaazul.com` (Financeiro, Contratos, Pessoas, Produtos, Vendas,
+Orçamentos, Serviços, Notas Fiscais, Protocolos). Usa apenas a biblioteca
+padrão. Cuida do Basic auth na renovação do token, da troca de código por token
+e das chamadas autenticadas à API.
 
 O .env é procurado subindo a árvore de diretórios (normalmente fica na RAIZ DO
 AGENT, acima da skill). Os tokens são persistidos em `token.json` ao lado do
@@ -144,10 +147,12 @@ class TokenStore:
         self.path = path
 
     def load(self):
+        # OSError cobre arquivo ausente e o caso de o caminho ser um diretório;
+        # ValueError cobre JSON corrompido. Em qualquer um, começa vazio.
         try:
             with open(self.path) as fh:
                 return json.load(fh)
-        except (FileNotFoundError, ValueError):
+        except (OSError, ValueError):
             return {}
 
     def save(self, refresh_token=None, access_token=None, expires_in=None):
@@ -159,10 +164,13 @@ class TokenStore:
         if expires_in:
             # margem de 60s para não usar um token quase expirado
             data["access_expires_at"] = int(time.time()) + int(expires_in) - 60
-        # escreve com permissão restrita (0600), de forma atômica
-        fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        # escreve num temporário (0600) e troca atomicamente — um crash no meio
+        # da escrita não corrompe o token.json (que forçaria novo login).
+        tmp = self.path + ".tmp"
+        fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
         with os.fdopen(fd, "w") as fh:
             json.dump(data, fh)
+        os.replace(tmp, self.path)
         return data
 
     def valid_access_token(self):
@@ -285,8 +293,14 @@ class ContaAzulClient:
             req.add_header("Content-Type", "application/json")
         try:
             with urllib.request.urlopen(req) as resp:
-                raw = resp.read().decode()
-                return json.loads(raw) if raw else None
+                raw = resp.read()
+                ctype = resp.headers.get("Content-Type", "")
+                if not raw:
+                    return None
+                # conteúdo não-JSON (ex.: PDF de venda) é devolvido como bytes
+                if "application/json" in ctype or raw[:1] in (b"{", b"["):
+                    return json.loads(raw.decode())
+                return raw
         except urllib.error.HTTPError as e:
             if e.code == 401 and _retry and self.refresh_token:
                 self.refresh()
@@ -311,12 +325,17 @@ class ContaAzulClient:
 
 
 def _parse_query(items):
+    # chaves repetidas viram lista (ex.: status=A status=B -> status=[A,B]),
+    # que urlencode(doseq=True) serializa como parâmetros repetidos.
     q = {}
     for it in items or []:
         if "=" not in it:
             raise SystemExit(f"--query inválido: {it} (use chave=valor)")
         k, v = it.split("=", 1)
-        q[k] = v
+        if k in q:
+            q[k] = q[k] + [v] if isinstance(q[k], list) else [q[k], v]
+        else:
+            q[k] = v
     return q
 
 
@@ -377,6 +396,9 @@ def main(argv=None):
             "token_type": out.get("token_type"),
             "salvo_em": cli.store.path if cli.store else None,
         }, ensure_ascii=False, indent=2))
+    elif isinstance(out, bytes):
+        # resposta binária (ex.: PDF) — escreve crua no stdout para redirecionar
+        sys.stdout.buffer.write(out)
     else:
         print(json.dumps(out, ensure_ascii=False, indent=2))
 

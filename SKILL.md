@@ -1,20 +1,22 @@
 ---
 name: conta-azul-skill
 description: >-
-  Integração com as APIs da Conta Azul (ERP brasileiro): Financeiro (v1) e
-  Contratos/vendas recorrentes (v1). Use ao criar ou consultar contas a pagar e
-  a receber, parcelas, eventos financeiros, centros de custo, categorias,
-  categorias DRE, contas financeiras, saldos (atual e inicial) e transferências;
-  ao gerenciar contratos de recorrência (listar, criar, detalhar, encerrar,
-  remover); ou ao lidar com a autenticação OAuth 2.0 (Authorization Code) da
-  Conta Azul, incluindo troca de código por token e renovação de access_token
-  via refresh_token.
+  Integração com as APIs (v1) da Conta Azul (ERP brasileiro) — todas no mesmo
+  host (api-v2.contaazul.com) e mesma autenticação OAuth 2.0. Use ao criar,
+  consultar ou atualizar: contas a pagar/receber, parcelas, centros de custo,
+  categorias, contas financeiras, saldos e transferências (Financeiro); clientes,
+  fornecedores e transportadoras (Pessoas); produtos e estoque (Produtos);
+  vendas e itens (Vendas); orçamentos/propostas (Orçamentos); contratos de
+  recorrência (Contratos); serviços (Serviços); notas fiscais NF-e/NFS-e (Notas
+  Fiscais); status de operações assíncronas (Protocolos). Também para a
+  autenticação OAuth 2.0 (Authorization Code): troca de código por token e
+  renovação de access_token via refresh_token.
 ---
 
-# Conta Azul — APIs Financeira e de Contratos (v1)
+# Conta Azul — APIs v1 (Financeiro, Pessoas, Produtos, Vendas e mais)
 
 Skill para integrar com a Conta Azul. Cobre o fluxo de autenticação OAuth 2.0 e
-duas APIs (mesmo host e mesma autenticação):
+nove APIs (todas no mesmo host e mesma autenticação):
 
 - **Financeiro**: eventos (contas a pagar/a receber), parcelas, centros de
   custo, categorias, categorias DRE, contas financeiras, saldos e transferências.
@@ -158,9 +160,11 @@ Base: `https://api-v2.contaazul.com`
 | Detalhar orçamento | `GET /v1/orcamentos/{id}` |
 | Excluir em lote (com corpo) | `DELETE /v1/orcamentos` |
 
-Parâmetros de query (paginação, filtros, enums) e detalhes de cada endpoint em
-[references/endpoints.md](references/endpoints.md). Schemas dos corpos de
-requisição (POST/PATCH) em [references/schemas.md](references/schemas.md).
+Parâmetros de query e detalhes dos endpoints do **Financeiro** em
+[references/endpoints.md](references/endpoints.md); schemas dos corpos do
+Financeiro em [references/schemas.md](references/schemas.md). As demais APIs têm
+seus endpoints e schemas na respectiva referência (links acima). O cliente
+suporta `GET`, `POST`, `PUT`, `PATCH` e `DELETE` (este com ou sem corpo).
 
 ## Cliente auxiliar
 
@@ -247,5 +251,16 @@ Mais detalhes em [references/erros-comuns.md](references/erros-comuns.md).
 
 ## Fontes
 
-Documentação oficial: <https://developers.contaazul.com/docs/financial-apis-openapi/v1>
-e <https://developers.contaazul.com/auth>.
+Documentação oficial da Conta Azul (<https://developers.contaazul.com>):
+
+- Autenticação: <https://developers.contaazul.com/auth>
+- Financeiro: <https://developers.contaazul.com/docs/financial-apis-openapi/v1>
+- Contratos: <https://developers.contaazul.com/docs/open-api-scheduled-sales/v1>
+- Pessoas: <https://developers.contaazul.com/open-api-docs/open-api-person/v1>
+- Produtos: <https://developers.contaazul.com/open-api-docs/open-api-inventory/v1>
+- Vendas: <https://developers.contaazul.com/docs/sales-apis-openapi/v1>
+- Orçamentos: <https://developers.contaazul.com/docs/open-api-proposal/v1>
+- Serviços: <https://developers.contaazul.com/open-api-docs/open-api-service/v1>
+- Notas fiscais: <https://developers.contaazul.com/open-api-docs/open-api-invoice/v1>
+- Protocolos: <https://developers.contaazul.com/docs/protocol-apis-openapi/v1>
+- Erros comuns: <https://developers.contaazul.com/commonmistakes>
