@@ -26,6 +26,8 @@ duas APIs (mesmo host e mesma autenticação):
   e tabelas auxiliares (NCM, CEST, unidades) — ver [references/produtos.md](references/produtos.md).
 - **Notas fiscais** (consulta): NF-e e NFS-e por filtro, detalhe por chave e
   vínculo a MDF-e — ver [references/notas-fiscais.md](references/notas-fiscais.md).
+- **Serviços**: catálogo de serviços (criar, consultar, atualizar, excluir em
+  lote) — ver [references/servicos.md](references/servicos.md).
 
 ## URLs base
 
@@ -120,6 +122,16 @@ Base: `https://api-v2.contaazul.com`
 | Listar NFS-e (serviço) | `GET /v1/notas-fiscais-servico` |
 | Detalhar por chave | `GET /v1/notas-fiscais/{chave}` |
 | Vincular notas a MDF-e | `POST /v1/notas-fiscais/vinculo-mdfe` |
+
+### Serviços — ver [references/servicos.md](references/servicos.md)
+
+| Recurso | Método e caminho |
+| --- | --- |
+| Listar/filtrar serviços | `GET /v1/servicos` |
+| Criar serviço | `POST /v1/servicos` |
+| Detalhar serviço | `GET /v1/servicos/{id}` |
+| Atualizar (parcial) | `PATCH /v1/servicos/{id}` |
+| Excluir em lote (com corpo) | `DELETE /v1/servicos` |
 
 Parâmetros de query (paginação, filtros, enums) e detalhes de cada endpoint em
 [references/endpoints.md](references/endpoints.md). Schemas dos corpos de

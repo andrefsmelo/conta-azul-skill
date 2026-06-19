@@ -305,8 +305,9 @@ class ContaAzulClient:
     def patch(self, path, body, query=None):
         return self.request("PATCH", path, query=query, body=body)
 
-    def delete(self, path, query=None):
-        return self.request("DELETE", path, query=query)
+    def delete(self, path, query=None, body=None):
+        # alguns endpoints (ex.: exclusão em lote) exigem corpo no DELETE
+        return self.request("DELETE", path, query=query, body=body)
 
 
 def _parse_query(items):
@@ -339,6 +340,8 @@ def main(argv=None):
         sp.add_argument("--query", nargs="*", help="pares chave=valor")
         if name in ("post", "put", "patch"):
             sp.add_argument("--body", required=True, help="JSON do corpo")
+        if name == "delete":
+            sp.add_argument("--body", help="JSON do corpo (ex.: exclusão em lote)")
 
     args = p.parse_args(argv)
     cli = ContaAzulClient.from_env()
@@ -355,7 +358,8 @@ def main(argv=None):
         if args.cmd == "get":
             out = cli.get(args.path, query=query)
         elif args.cmd == "delete":
-            out = cli.delete(args.path, query=query)
+            body = json.loads(args.body) if getattr(args, "body", None) else None
+            out = cli.delete(args.path, query=query, body=body)
         else:
             body = json.loads(args.body)
             fn = {"post": cli.post, "put": cli.put, "patch": cli.patch}[args.cmd]
