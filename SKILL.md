@@ -196,6 +196,11 @@ python scripts/ca_client.py get /v1/conta-financeira --query pagina=1 tamanho_pa
 > Na tela de autorização use **uma conta do ERP**, não a conta do Portal do
 > Desenvolvedor — senão a API responde `401` mesmo com o token válido.
 
+**Multi-conta (vários ERPs):** passe `--token-file <caminho>` em cada comando
+para usar o token de uma conta específica. A skill é stateless quanto a contas —
+quem decide o caminho por conta/grupo é o agente. Direcionamentos para o agente
+organizar seu `accounts.json` em [references/multi-conta.md](references/multi-conta.md).
+
 ## Criação de eventos é assíncrona (protocolo)
 
 `POST` de contas a pagar/receber **não cria o evento na hora**. A resposta é um

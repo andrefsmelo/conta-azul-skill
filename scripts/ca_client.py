@@ -24,6 +24,12 @@ Fluxo inicial (uma vez):
   python ca_client.py authorize-url        # abra a URL, logue com conta do ERP
   python ca_client.py exchange --code CODE  # salva os tokens no token.json
 
+Multi-conta (vários ERPs): passe --token-file em cada comando para usar o token
+de uma conta específica. Quem chama (o agente) decide o caminho por conta; a
+skill não guarda mapa de contas. Ver references/multi-conta.md.
+  python ca_client.py exchange --code CODE --token-file /dados/tokens/empresaA.json
+  python ca_client.py get /v1/pessoas/conta-conectada --token-file /dados/tokens/empresaA.json
+
 Exemplos de CLI:
   # Trocar o code do OAuth por tokens (etapa 2)
   python ca_client.py exchange --code SEU_CODE
@@ -200,10 +206,13 @@ class ContaAzulClient:
         self.store = store
 
     @classmethod
-    def from_env(cls, dotenv=True, store=True):
+    def from_env(cls, dotenv=True, store=True, token_path=None):
+        # token_path permite multi-conta: cada conta/ERP tem seu próprio arquivo
+        # de token, cujo caminho é decidido por quem chama (o agente), não pela
+        # skill. Sem token_path, usa o local padrão (uso single-conta).
         if dotenv:
             load_dotenv()
-        token_store = TokenStore() if store else None
+        token_store = TokenStore(token_path) if store else None
         # tokens vêm preferencialmente do store (refletem a última rotação);
         # se o store ainda não existe, cai para o .env/ambiente como semente.
         saved = token_store.load() if token_store else {}
@@ -343,18 +352,25 @@ def main(argv=None):
     p = argparse.ArgumentParser(description="Cliente CLI da API Conta Azul")
     sub = p.add_subparsers(dest="cmd", required=True)
 
+    # --token-file: seleciona o arquivo de token desta conta (multi-conta). O
+    # caminho é decidido por quem chama; a skill não guarda mapa de contas.
+    tokp = argparse.ArgumentParser(add_help=False)
+    tokp.add_argument("--token-file",
+                      help="caminho do token.json desta conta (multi-conta)")
+
     pa = sub.add_parser("authorize-url", help="gerar a URL de login (etapa 1)")
     pa.add_argument("--redirect-uri")
     pa.add_argument("--state")
 
-    pe = sub.add_parser("exchange", help="trocar code por tokens")
+    pe = sub.add_parser("exchange", help="trocar code por tokens", parents=[tokp])
     pe.add_argument("--code", required=True)
     pe.add_argument("--redirect-uri")
 
-    sub.add_parser("refresh", help="renovar access_token")
+    sub.add_parser("refresh", help="renovar access_token", parents=[tokp])
 
     for name in ("get", "post", "put", "patch", "delete"):
-        sp = sub.add_parser(name, help=f"{name.upper()} em um caminho da API")
+        sp = sub.add_parser(name, help=f"{name.upper()} em um caminho da API",
+                            parents=[tokp])
         sp.add_argument("path")
         sp.add_argument("--query", nargs="*", help="pares chave=valor")
         if name in ("post", "put", "patch"):
@@ -363,7 +379,7 @@ def main(argv=None):
             sp.add_argument("--body", help="JSON do corpo (ex.: exclusão em lote)")
 
     args = p.parse_args(argv)
-    cli = ContaAzulClient.from_env()
+    cli = ContaAzulClient.from_env(token_path=getattr(args, "token_file", None))
 
     if args.cmd == "authorize-url":
         print(cli.authorize_url(args.redirect_uri, args.state))
