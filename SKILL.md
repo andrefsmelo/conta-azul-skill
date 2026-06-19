@@ -75,7 +75,7 @@ Base: `https://api-v2.contaazul.com`
 | Parcela por id | `GET /v1/financeiro/eventos-financeiros/parcelas/{id}` |
 | Atualizar parcela (parcial) | `PATCH /v1/financeiro/eventos-financeiros/parcelas/{id}` |
 | Eventos alterados num período | `GET /v1/financeiro/eventos-financeiros/alteracoes` |
-| Status de protocolo (confirma criação) | `GET /v1/protocolo/{id}` *(API de Protocolos)* |
+| Status de protocolo (confirma criação) | `GET /v1/protocolo/{id}` *(ver [references/protocolos.md](references/protocolos.md))* |
 
 ### Contratos (vendas recorrentes) — ver [references/contratos.md](references/contratos.md)
 
@@ -164,7 +164,8 @@ host `api-v2.contaazul.com`):
 
 Se `status: ERROR`, o campo `resposta` traz o motivo (ex.: *"A conta financeira
 de id ... não existe."*). Sempre confira o protocolo antes de assumir sucesso —
-um `200` no POST só significa que foi **enfileirado**.
+um `200` no POST só significa que foi **enfileirado**. Detalhes do recurso de
+protocolo em [references/protocolos.md](references/protocolos.md).
 
 ## Regras de negócio importantes
 
