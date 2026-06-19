@@ -233,6 +233,10 @@ protocolo em [references/protocolos.md](references/protocolos.md).
   (`id_categoria`). Use `GET /v1/categorias?tipo=DESPESA` (ou `RECEITA`) com
   `apenas_filhos=true` para pegar categorias que aceitam lançamento.
 - **`detalhe_valor` da parcela exige `valor_liquido`** além de `valor_bruto`.
+- **IDs recorrentes**: para acelerar testes no sandbox, IDs comuns (conta
+  financeira, categoria, cliente…) estão em
+  [references/ids-recorrentes.md](references/ids-recorrentes.md). Para cliente
+  real, use o cache `refs` por conta (ver [references/multi-conta.md](references/multi-conta.md)).
 - **Paginação**: `tamanho_pagina` só aceita `10, 20, 50, 100, 200, 500, 1000`.
 - **Datas**: use ISO-8601. Buscas de parcelas exigem `data_vencimento_de` e
   `data_vencimento_ate` obrigatórios.
