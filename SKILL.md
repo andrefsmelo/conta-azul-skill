@@ -30,6 +30,8 @@ duas APIs (mesmo host e mesma autenticação):
   lote) — ver [references/servicos.md](references/servicos.md).
 - **Vendas**: vendas/orçamentos (criar, consultar, editar, itens, PDF,
   vendedores, exclusão em lote) — ver [references/vendas.md](references/vendas.md).
+- **Orçamentos** (propostas): criar, consultar e excluir em lote — ver
+  [references/orcamentos.md](references/orcamentos.md).
 
 ## URLs base
 
@@ -146,6 +148,15 @@ Base: `https://api-v2.contaazul.com`
 | PDF da venda | `GET /v1/venda/{id}/imprimir` |
 | Próximo número / vendedores | `GET /v1/venda/proximo-numero` · `GET /v1/venda/vendedores` |
 | Excluir em lote | `POST /v1/venda/exclusao-lote` |
+
+### Orçamentos (propostas) — ver [references/orcamentos.md](references/orcamentos.md)
+
+| Recurso | Método e caminho |
+| --- | --- |
+| Listar/filtrar orçamentos | `GET /v1/orcamentos` |
+| Criar orçamento | `POST /v1/orcamentos` |
+| Detalhar orçamento | `GET /v1/orcamentos/{id}` |
+| Excluir em lote (com corpo) | `DELETE /v1/orcamentos` |
 
 Parâmetros de query (paginação, filtros, enums) e detalhes de cada endpoint em
 [references/endpoints.md](references/endpoints.md). Schemas dos corpos de
