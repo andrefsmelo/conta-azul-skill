@@ -1,5 +1,13 @@
+# Segredos e tokens (nunca versionar)
 .env
 .env.*
 *.env
-__pycache__/
 token.json
+*.token.json
+tokens/
+
+# Dados do agente: contas e cache de UUIDs por cliente (confidencial)
+accounts.json
+refs.json
+
+__pycache__/

@@ -86,6 +86,53 @@ python scripts/ca_client.py get /v1/financeiro/eventos-financeiros/contas-a-paga
 A renovação e a **rotação do `refresh_token`** acontecem dentro daquele arquivo,
 automaticamente — sem afetar as outras contas.
 
+## Cache de UUIDs recorrentes (refs)
+
+Para evitar "buscar por nome → pegar id" a cada operação, o agente pode manter um
+cache de UUIDs recorrentes **por conta**, dentro do `accounts.json` (ou em um
+`refs.json` ao lado). A skill **não** mantém esse cache — é dado do agente.
+
+```json
+{
+  "telegram:-1001234567890": {
+    "empresa": "Empresa A LTDA",
+    "token_file": "/dados/conta-azul/tokens/empresaA.json",
+    "refs": {
+      "conta_financeira_padrao": "56227ea5-d5ad-4e3d-9dca-8ffae5a9ca69",
+      "categoria_aluguel": "491de8c4-a6f5-42b5-a8db-11310d9f34d3",
+      "cliente_principal": "2964288e-2cd9-44d3-9c6a-b40c5226b881"
+    }
+  }
+}
+```
+
+Regras para o cache não virar fonte de bug:
+- **Só cacheie UUIDs confirmados pela API.** Nunca invente/adivinhe um UUID — IDs
+  inexistentes falham (ex.: a criação assíncrona retorna protocolo `ERROR`).
+- **Trate como atalho, com fallback:** se um UUID em cache falhar (`404`/erro),
+  **re-resolva via API** (GET por nome/filtro) e atualize o cache.
+- **UUID é por conta** — nunca reaproveite o ref de uma empresa em outra.
+- Opcional: TTL (revalidar periodicamente), pois recursos podem ser apagados ou
+  renomeados no ERP.
+
+## Segurança e versionamento
+
+| Dado | É credencial? | Como tratar |
+| --- | --- | --- |
+| Token (`token_file`) | **Sim** | Arquivo próprio, permissão `0600`, **nunca** versionar |
+| `accounts.json` / `refs` (UUIDs) | **Não** (um UUID sem token não faz nada) | Mas é **dado confidencial do cliente** → fora do versionamento, `0600` |
+| `client_id` / `client_secret` (`.env`) | **Sim** | `.env`, `0600`, nunca versionar |
+
+- **Mantenha `accounts.json` (e `refs.json`, `tokens/`) sempre no `.gitignore`.**
+  O `.gitignore` desta skill já cobre esses nomes; garanta o mesmo no
+  repositório/volume onde o **agente** guarda esses arquivos (eles vivem fora da
+  skill).
+- Permissões restritas: arquivos `0600`, diretório de tokens `0700`.
+- O `accounts.json` guarda **caminhos** de token e **refs** — não o token em si;
+  ainda assim, é confidencial.
+- Antes de commitar no lado do agente, confira: `git status` não deve listar
+  `accounts.json`, `refs.json`, `*.token.json` nem `tokens/`.
+
 ## Notas
 
 - **App compartilhado:** `client_id`/`client_secret`/`redirect_uri` continuam no
